@@ -49,6 +49,8 @@ public class GaussianSplatAssetCreator : EditorWindow
     [SerializeField] GaussianSplatAsset.VectorFormat m_FormatScale;
     [SerializeField] GaussianSplatAsset.SHFormat m_FormatSH;
     [SerializeField] ColorFormat m_FormatColor;
+    [SerializeField] float3 m_Rotation = new(0, 0, 0);
+    [SerializeField] float m_YPos = 0.0f;
 
     string m_ErrorMessage;
     string m_PrevPlyPath;
@@ -95,6 +97,29 @@ public class GaussianSplatAssetCreator : EditorWindow
         else
             GUILayout.Space(EditorGUIUtility.singleLineHeight);
 
+        EditorGUILayout.Space();
+        GUILayout.Label("Y position", EditorStyles.boldLabel);
+        string yPosText = GUILayout.TextField(m_YPos.ToString());
+        if (float.TryParse(yPosText, out float newYPos))
+        {
+            m_YPos = newYPos;
+        }
+        GUILayout.Label("Rotation", EditorStyles.boldLabel);
+        string rotXText = GUILayout.TextField(m_Rotation.x.ToString());
+        if (float.TryParse(rotXText, out float newRotX))
+        {
+            m_Rotation.x = newRotX;
+        }
+        string rotYText = GUILayout.TextField(m_Rotation.y.ToString());
+        if (float.TryParse(rotYText, out float newRotY))
+        {
+            m_Rotation.y = newRotY;
+        }
+        string rotZText = GUILayout.TextField(m_Rotation.z.ToString());
+        if (float.TryParse(rotZText, out float newRotZ))
+        {
+            m_Rotation.z = newRotZ;
+        }
         EditorGUILayout.Space();
         GUILayout.Label("Output", EditorStyles.boldLabel);
         rect = EditorGUILayout.GetControlRect(true);
@@ -261,7 +286,18 @@ public class GaussianSplatAssetCreator : EditorWindow
 
         EditorUtility.DisplayProgressBar(kProgressTitle, "Reading data files", 0.0f);
         GaussianSplatAsset.CameraInfo[] cameras = LoadJsonCamerasFile(m_InputFile, m_ImportCameras);
-        using NativeArray<InputSplatData> inputSplats = LoadPLYSplatFile(m_InputFile);
+        NativeArray<InputSplatData> inputSplats = LoadPLYSplatFile(m_InputFile);
+
+        for (int i = 0; i < inputSplats.Length; ++i)
+        {
+            InputSplatData editedSplatData = inputSplats[i];
+            editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.x, new Vector3(-1.0f, 0.0f, 0.0f)) * editedSplatData.pos;
+            editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.y, new Vector3(0.0f, -1.0f, 0.0f)) * editedSplatData.pos;
+            editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.z, new Vector3(0.0f, 0.0f, 1.0f)) * editedSplatData.pos;
+            editedSplatData.pos.y += m_YPos;
+            inputSplats[i] = editedSplatData;
+        }
+
         if (inputSplats.Length == 0)
         {
             EditorUtility.ClearProgressBar();
