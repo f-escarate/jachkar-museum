@@ -266,6 +266,8 @@ ByteAddressBuffer _SplatOther;
 ByteAddressBuffer _SplatSH;
 Texture2D _SplatColor;
 uint _SplatFormat;
+float3 _FirstSplatPos;
+float3 _LastSplatPos;
 
 // Match GaussianSplatAsset.VectorFormat
 #define VECTOR_FMT_32F 0
@@ -415,6 +417,11 @@ SplatData LoadSplatData(uint idx)
     half4 col   = lerp(colMin, colMax, LoadSplatColTex(coord));
     s.opacity   = InvSquareCentered01(col.a);
     s.sh.col    = col.rgb;
+    if(s.pos.x < _FirstSplatPos.x || s.pos.x > _LastSplatPos.x ||
+        s.pos.y > _LastSplatPos.y || s.pos.y < _FirstSplatPos.y ||
+        s.pos.z < _FirstSplatPos.z || s.pos.z > _LastSplatPos.z ){
+        s.opacity = 0;
+    }
 
     uint shIndex = idx;
     if (shFormat > VECTOR_FMT_6)

@@ -208,6 +208,10 @@ public class GaussianSplatRenderer : MonoBehaviour
     [Header("Data Asset")]
 
     public GaussianSplatAsset m_Asset;
+    
+    [Header("Gaussian Splatting crop")]
+    public float3 m_FirstGSplatPoint = new(-100.0f, -100.0f, -100.0f);
+    public float3 m_LastGSplatPoint = new(100.0f, 100.0f, 100.0f);
 
     [Header("Render Options")]
 
@@ -373,6 +377,9 @@ public class GaussianSplatRenderer : MonoBehaviour
         cmb.SetComputeIntParam(cs, "_SplatBitsValid", m_GpuSplatSelectedBuffer != null && m_GpuSplatDeletedBuffer != null ? 1 : 0);
         uint format = (uint)m_Asset.m_PosFormat | ((uint)m_Asset.m_ScaleFormat << 8) | ((uint)m_Asset.m_SHFormat << 16);
         cmb.SetComputeIntParam(cs, "_SplatFormat", (int)format);
+        cmb.SetComputeFloatParams(cs, "_FirstSplatPos", m_FirstGSplatPoint.x, m_FirstGSplatPoint.y, m_FirstGSplatPoint.z);
+        cmb.SetComputeFloatParams(cs, "_LastSplatPos", m_LastGSplatPoint.x, m_LastGSplatPoint.y, m_LastGSplatPoint.z);
+
     }
 
     internal void SetAssetDataOnMaterial(MaterialPropertyBlock mat)
