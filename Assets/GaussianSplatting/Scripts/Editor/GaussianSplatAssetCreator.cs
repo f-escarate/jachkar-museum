@@ -50,7 +50,7 @@ public class GaussianSplatAssetCreator : EditorWindow
     [SerializeField] GaussianSplatAsset.SHFormat m_FormatSH;
     [SerializeField] ColorFormat m_FormatColor;
     [SerializeField] float3 m_Rotation = new(0, 0, 0);
-    [SerializeField] float m_YPos = 0.0f;
+    [SerializeField] float m_YPos = 2.0f;
 
     string m_ErrorMessage;
     string m_PrevPlyPath;
@@ -98,29 +98,12 @@ public class GaussianSplatAssetCreator : EditorWindow
             GUILayout.Space(EditorGUIUtility.singleLineHeight);
 
         EditorGUILayout.Space();
-        GUILayout.Label("Y position", EditorStyles.boldLabel);
-        string yPosText = GUILayout.TextField(m_YPos.ToString());
-        if (float.TryParse(yPosText, out float newYPos))
-        {
-            m_YPos = newYPos;
-        }
-        GUILayout.Label("Rotation", EditorStyles.boldLabel);
-        string rotXText = GUILayout.TextField(m_Rotation.x.ToString());
-        if (float.TryParse(rotXText, out float newRotX))
-        {
-            m_Rotation.x = newRotX;
-        }
-        string rotYText = GUILayout.TextField(m_Rotation.y.ToString());
-        if (float.TryParse(rotYText, out float newRotY))
-        {
-            m_Rotation.y = newRotY;
-        }
-        string rotZText = GUILayout.TextField(m_Rotation.z.ToString());
-        if (float.TryParse(rotZText, out float newRotZ))
-        {
-            m_Rotation.z = newRotZ;
-        }
+        
+        GUILayout.Label("Transforms", EditorStyles.boldLabel);
+        m_YPos = EditorGUILayout.FloatField("Position Y:", m_YPos);
+        m_Rotation = EditorGUILayout.Vector3Field("Rotation:", m_Rotation);
         EditorGUILayout.Space();
+        
         GUILayout.Label("Output", EditorStyles.boldLabel);
         rect = EditorGUILayout.GetControlRect(true);
         string newOutputFolder = m_FilePicker.PathFieldGUI(rect, new GUIContent("Output Folder"), m_OutputFolder, null, "GaussianAssetOutputFolder");
@@ -293,7 +276,7 @@ public class GaussianSplatAssetCreator : EditorWindow
             InputSplatData editedSplatData = inputSplats[i];
             editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.x, new Vector3(-1.0f, 0.0f, 0.0f)) * editedSplatData.pos;
             editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.y, new Vector3(0.0f, -1.0f, 0.0f)) * editedSplatData.pos;
-            editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.z, new Vector3(0.0f, 0.0f, 1.0f)) * editedSplatData.pos;
+            editedSplatData.pos = Quaternion.AngleAxis(m_Rotation.z, new Vector3(0.0f, 0.0f, -1.0f)) * editedSplatData.pos;
             editedSplatData.pos.y += m_YPos;
             inputSplats[i] = editedSplatData;
         }
