@@ -22,6 +22,7 @@ def create_gsplat(video, qscale, qmin, fps):
     path = video_to_photos(video, qscale, qmin, fps, OUTPUT_PATH)
     model = gSplatModel()
     model.run(path)
+    model.unity_import(path)
 
 if __name__ == "__main__":
     #create_gsplat(argv[1], argv[2], argv[3], argv[4])
