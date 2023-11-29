@@ -37,6 +37,10 @@ half4 frag (v2f i) : SV_Target
     half4 col = _GaussianSplatRT.Load(int3(i.vertex.xy, 0));
     col.rgb = GammaToLinearSpace(col.rgb);
     col.a = saturate(col.a * 1.5);
+    //Adjust the tolerance to get rid of the black border caused by removing the background
+    //float tolerance = 0.1;
+    //if(col.r+col.b+col.g < tolerance)
+    //    discard;
     return col;
 }
 ENDCG
