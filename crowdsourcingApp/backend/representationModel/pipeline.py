@@ -19,10 +19,11 @@ def video_to_photos(input, qscale, qmin, fps, output_path):
 
 def create_gsplat(video, qscale, qmin, fps):    
     OUTPUT_PATH = ".\gaussian-splatting\data"
+    name = video.split(".")[0]
     path = video_to_photos(video, qscale, qmin, fps, OUTPUT_PATH)
     model = gSplatModel()
-    model.run(path)
-    model.unity_import(path)
+    model.run(path, name)
+    model.unity_import(name)
 
 if __name__ == "__main__":
     #create_gsplat(argv[1], argv[2], argv[3], argv[4])
