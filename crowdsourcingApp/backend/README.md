@@ -4,12 +4,14 @@ Para correr la etapa de obtención de representaciones 3D es necesario contar co
 * [COLMAP](https://colmap.github.io/install.html)
 * CUDA (probado con v11.8)
 * cudNN
-* Librerías de Python (están en el requirements.txt)
+* Librerías de Python (están en el requirements.yml)
 
 ### Ambiente
-Se recomienda usar Anaconda, creando un ambiente que tenga las librerías especificadas en el archivo `jachkar-museum/crowdsourcingApp/backend/representationModel/requirements.txt` usando:
+Se recomienda usar Anaconda, creando un ambiente que tenga las librerías especificadas en el archivo `jachkar-museum/crowdsourcingApp/backend/representationModel/requirements.yml` usando:
 
-```conda create --name <env> --file requirements.txt```
+```
+    conda env create -f environment.yml
+```
 
 ### Uso
 
