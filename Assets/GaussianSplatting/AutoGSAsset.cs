@@ -16,7 +16,7 @@ public class AutoGSAsset: MonoBehaviour
 {
     const string kCamerasJson = "cameras.json";
     static string m_ErrorMessage = null;
-    static float3 m_Rotation = new(0, 0, 0);
+    static float3 m_Rotation = new(180, 0, 0);
     static float m_YPos = 2.0f;
     static GaussianSplatAsset.VectorFormat m_FormatPos;
     static GaussianSplatAsset.VectorFormat m_FormatScale;
@@ -43,10 +43,13 @@ public class AutoGSAsset: MonoBehaviour
         }
         Directory.CreateDirectory(m_OutputFolder);
 
-        // Me quedé acáaaaaa OADHOASDBFOÁBDNOFBN
         //EditorUtility.DisplayProgressBar(kProgressTitle, "Reading data files", 0.0f);
         GaussianSplatAsset.CameraInfo[] cameras = LoadJsonCamerasFile(m_InputFile, m_ImportCameras);
         NativeArray<InputSplatData> inputSplats = LoadPLYSplatFile(m_InputFile);
+
+        if (cameras == null || inputSplats == null) {
+            EditorApplication.Exit(5);
+        }
 
         for (int i = 0; i < inputSplats.Length; ++i)
         {

@@ -54,8 +54,9 @@ def create_gsplat(video, n_frames=45):
     #path = video_to_photos_ffmpeg(video, OUTPUT_PATH)
     path = video_to_photos(video, n_frames, OUTPUT_PATH)
     model = gSplatModel()
-    model.run(path, name)
-    model.unity_import(name)
+    run_res = model.run(path, name)
+    if run_res == 0:
+        model.unity_import(name)
 
 if __name__ == "__main__":
     create_gsplat(argv[1], int(argv[2]))
