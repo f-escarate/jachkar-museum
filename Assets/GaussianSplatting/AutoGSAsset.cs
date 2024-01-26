@@ -131,12 +131,32 @@ public class AutoGSAsset: MonoBehaviour
 
         var assetPath = $"{m_OutputFolder}/{baseName}.asset";
         var savedAsset = CreateOrReplaceAsset(asset, assetPath);
+        Debug.Log("~~~ Asset Created ~~~: ");
+        // Create prefab
+        var prefabPath = $"{m_OutputFolder}/{baseName}.prefab";
+        createPrefabFromAsset(savedAsset, prefabPath);
 
         //EditorUtility.DisplayProgressBar(kProgressTitle, "Saving assets", 0.99f);
         AssetDatabase.SaveAssets();
         EditorUtility.ClearProgressBar();
 
         Selection.activeObject = savedAsset;
+    }
+
+    static void createPrefabFromAsset(UnityEngine.Object asset, string prefabPath){
+        Debug.Log("~~~ Creating prefab ~~~: ");
+        
+        GameObject prefab = new GameObject();
+        Debug.Log("~~~ Adding  GaussianSplatRenderer~~~: ");
+        prefab.AddComponent(typeof(GaussianSplatRenderer));
+        // change asset for the gaussian splat renderer
+        GaussianSplatRenderer gaussianSplatRenderer = prefab.GetComponent<GaussianSplatRenderer>();
+        gaussianSplatRenderer.m_Asset = (GaussianSplatAsset)asset;
+
+        PrefabUtility.SaveAsPrefabAsset(prefab, prefabPath);
+        Debug.Log("~~~ Setting AssetBundle ~~~: ");
+        // Set AssetBundleName
+        AssetImporter.GetAtPath(prefabPath).SetAssetBundleNameAndVariant("gaussian_splat", "");
     }
 
     static GaussianSplatAsset.CameraInfo[] LoadJsonCamerasFile(string curPath, bool doImport)
